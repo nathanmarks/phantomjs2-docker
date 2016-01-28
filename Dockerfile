@@ -2,8 +2,7 @@ FROM ubuntu:14.04
 
 # Dependencies we just need for building phantomjs
 ENV buildDependencies\
-  wget unzip python build-essential g++ flex bison gperf\
-  ruby perl libsqlite3-dev libssl-dev libpng-dev git
+  wget bzip2
 
 # Dependencies we need for running phantomjs
 ENV phantomJSDependencies\
@@ -14,19 +13,21 @@ RUN \
     # Installing dependencies
     apt-get update -yqq \
 &&  apt-get install -fyqq ${buildDependencies} ${phantomJSDependencies}\
-    # Building phantom
-&&  git clone git://github.com/ariya/phantomjs.git \
+    # Downloading src, unzipping & removing zip
+&&  mkdir phantomjs \
 &&  cd phantomjs \
-&&  git checkout 2.1.1 \
-&&  git submodule init \
-&&  git submodule update \
-&&  python build.py \
+&&  wget https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 \
+&&  bunzip2 phantomjs-2.1.1-linux-x86_64.tar.bz2 \
+&&  tar -xvf phantomjs-2.1.1-linux-x86_64.tar \
+&&  rm -rf /phantomjs/phantomjs-2.1.1-linux-x86_64.tar \
+    # Building phantom
+&&  cd phantomjs-2.1.1-linux-x86_64/ \
     # Removing everything but the binary
 &&  ls -A | grep -v bin | xargs rm -rf \
     # Symlink phantom so that we are able to run `phantomjs`
-&&  ln -s /phantomjs/bin/phantomjs /usr/local/share/phantomjs \
-&&  ln -s /phantomjs/bin/phantomjs /usr/local/bin/phantomjs \
-&&  ln -s /phantomjs/bin/phantomjs /usr/bin/phantomjs \
+&&  ln -s /phantomjs/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/local/share/phantomjs \
+&&  ln -s /phantomjs/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/local/bin/phantomjs \
+&&  ln -s /phantomjs/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/bin/phantomjs \
     # Removing build dependencies, clean temporary files
 &&  apt-get purge -yqq ${buildDependencies} \
 &&  apt-get autoremove -yqq \
@@ -36,5 +37,5 @@ RUN \
 &&  phantomjs -v
 
 CMD \
-    echo "phantomjs binary is located at /phantomjs/phantomjs-2.1.1/bin/phantomjs"\
+    echo "phantomjs binary is located at /phantomjs/phantomjs-2.1.1-linux-x86_64/bin/phantomjs"\
 &&  echo "just run 'phantomjs' (version `phantomjs -v`)"
