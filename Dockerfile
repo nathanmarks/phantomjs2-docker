@@ -17,18 +17,18 @@ RUN \
     # Downloading src, unzipping & removing zip
 &&  mkdir phantomjs \
 &&  cd phantomjs \
-&&  wget https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.0.0-source.zip \
-&&  unzip phantomjs-2.0.0-source.zip \
-&&  rm -rf /phantomjs/phantomjs-2.0.0-source.zip \
+&&  wget https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-source.zip \
+&&  unzip phantomjs-2.1.1-source.zip \
+&&  rm -rf /phantomjs/phantomjs-2.1.1-source.zip \
     # Building phantom
-&&  cd phantomjs-2.0.0/ \
+&&  cd phantomjs-2.1.1/ \
 &&  ./build.sh --confirm --silent \
     # Removing everything but the binary
 &&  ls -A | grep -v bin | xargs rm -rf \
     # Symlink phantom so that we are able to run `phantomjs`
-&&  ln -s /phantomjs/phantomjs-2.0.0/bin/phantomjs /usr/local/share/phantomjs \
-&&  ln -s /phantomjs/phantomjs-2.0.0/bin/phantomjs /usr/local/bin/phantomjs \
-&&  ln -s /phantomjs/phantomjs-2.0.0/bin/phantomjs /usr/bin/phantomjs \
+&&  ln -s /phantomjs/phantomjs-2.1.1/bin/phantomjs /usr/local/share/phantomjs \
+&&  ln -s /phantomjs/phantomjs-2.1.1/bin/phantomjs /usr/local/bin/phantomjs \
+&&  ln -s /phantomjs/phantomjs-2.1.1/bin/phantomjs /usr/bin/phantomjs \
     # Removing build dependencies, clean temporary files
 &&  apt-get purge -yqq ${buildDependencies} \
 &&  apt-get autoremove -yqq \
@@ -38,5 +38,5 @@ RUN \
 &&  phantomjs -v
 
 CMD \
-    echo "phantomjs binary is located at /phantomjs/phantomjs-2.0.0/bin/phantomjs"\
+    echo "phantomjs binary is located at /phantomjs/phantomjs-2.1.1/bin/phantomjs"\
 &&  echo "just run 'phantomjs' (version `phantomjs -v`)"
